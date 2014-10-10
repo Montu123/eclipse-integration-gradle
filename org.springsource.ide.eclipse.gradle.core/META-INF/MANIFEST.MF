@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.io,
  org.eclipse.m2e.core;resolution:=optional,
  org.eclipse.m2e.maven.runtime;resolution:=optional,
- org.springsource.ide.eclipse.gradle.toolingapi
+ org.springsource.ide.eclipse.gradle.toolingapi,
+ org.eclipse.jdt.junit.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.springsource.ide.eclipse.gradle.core,

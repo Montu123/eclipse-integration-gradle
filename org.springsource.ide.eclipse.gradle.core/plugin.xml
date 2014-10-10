@@ -49,6 +49,15 @@
      <super type="org.eclipse.core.resources.problemmarker"/>
      <persistent value="true"/>
   </extension>
+  
+   <extension point="org.eclipse.jdt.launching.classpathProviders">
+      <classpathProvider 
+          id="org.springsource.ide.eclipse.gradle.core.launch.classpathProvider"
+          class="org.springsource.ide.eclipse.gradle.core.launch.GradleRuntimeClasspathProvider"/>
+      <classpathProvider 
+          id="org.springsource.ide.eclipse.gradle.core.launch.sourcepathProvider"
+          class="org.springsource.ide.eclipse.gradle.core.launch.GradleSourcePathProvider"/>
+   </extension>
 
   
 

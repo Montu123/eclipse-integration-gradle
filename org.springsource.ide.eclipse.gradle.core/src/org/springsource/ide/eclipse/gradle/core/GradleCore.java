@@ -11,8 +11,6 @@
 package org.springsource.ide.eclipse.gradle.core;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,23 +20,22 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfigurationListener;
 import org.eclipse.jdt.core.IJavaProject;
 import org.gradle.tooling.model.eclipse.HierarchicalEclipseProject;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.springsource.ide.eclipse.gradle.core.autorefresh.DependencyRefresher;
-import org.springsource.ide.eclipse.gradle.core.autorefresh.GradleWorkspaceListener;
+import org.springsource.ide.eclipse.gradle.core.launch.GradleLaunchConfigListener;
 import org.springsource.ide.eclipse.gradle.core.preferences.GradleAPIProperties;
 import org.springsource.ide.eclipse.gradle.core.preferences.GradlePreferences;
 import org.springsource.ide.eclipse.gradle.core.util.ExceptionUtil;
-import org.springsource.ide.eclipse.gradle.core.util.GradleRunnable;
-import org.springsource.ide.eclipse.gradle.core.util.JobUtil;
 
 
 /**
@@ -62,6 +59,7 @@ public class GradleCore extends Plugin {
 	private GradlePreferences gradlePreferences = null;
 
 	private GradleAPIProperties properties;
+	private ILaunchConfigurationListener launchConfigurationListener;
 
 	/*
 	 * (non-Javadoc)
@@ -73,6 +71,8 @@ public class GradleCore extends Plugin {
 		GradleCore.context = bundleContext;
 		instance = this;
 		DependencyRefresher.init();
+		launchConfigurationListener = new GradleLaunchConfigListener();
+	    DebugPlugin.getDefault().getLaunchManager().addLaunchConfigurationListener(launchConfigurationListener);
 	}
 
 	/*
@@ -84,6 +84,9 @@ public class GradleCore extends Plugin {
 		GradleCore.context = null;
 		if (gradlePreferences!=null) {
 			gradlePreferences.dispose();
+		}
+		if (launchConfigurationListener != null) {
+		    DebugPlugin.getDefault().getLaunchManager().removeLaunchConfigurationListener(launchConfigurationListener);
 		}
 		super.stop(bundleContext);
 	}
